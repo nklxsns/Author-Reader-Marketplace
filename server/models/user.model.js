@@ -8,7 +8,7 @@ const UserSchema = Schema({
   password: { type: String, required: true },
   role: {
     type: String,
-    default: "author",
+    required: true,
   },
 });
 

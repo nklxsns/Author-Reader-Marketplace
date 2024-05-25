@@ -9,7 +9,7 @@ const BookSchema = Schema({
   price: { type: Number, required: true },
   tags: { type: [String] },
   author_id: { type: Schema.Types.ObjectId, ref: "Author", required: true },
-  isPublished: { type: Boolean, required: true },
+  isPublished: { type: Boolean, default: false },
 });
 
 const Book = mongoose.model("Book", BookSchema);
