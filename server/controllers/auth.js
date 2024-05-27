@@ -3,6 +3,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 
 const createToken = (user) => {
+  // Create ".env" file with your JWT secret key as JWT_SECRET
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
@@ -13,7 +14,6 @@ const createToken = (user) => {
 const register = async (req, res) => {
   const { username, email, password } = req.body;
   try {
-    // validate email and username to be unique
     let user = await User.findOne({ email });
 
     if (user) {
@@ -31,7 +31,7 @@ const register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: req.body.role || "reader"
+      role: req.body.role || "reader",
     });
     await newUser.save();
 

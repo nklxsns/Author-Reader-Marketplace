@@ -12,6 +12,8 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/book", bookRoutes);
 
+// Create ".env" file with your mongo database uri as MONGODB_URI
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
