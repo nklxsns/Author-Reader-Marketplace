@@ -6,7 +6,6 @@ const { fetchBooks, createBook } = require("../controllers/books");
 const router = express.Router();
 
 router.post("/create", authenticate, createBook);
-
-router.get("/all/:publishedOnly", fetchBooks);
+router.get("/all", fetchBooks);
 
 module.exports = router;

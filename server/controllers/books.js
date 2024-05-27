@@ -22,7 +22,7 @@ const createBook = async (req, res) => {
 
 const fetchBooks = async (req, res) => {
   try {
-    const books = await Book.find({ isPublished: req.params.publishedOnly === "1" });
+    const books = await Book.find({ isPublished: req.query.publishedOnly === "true" });
     res.json(books);
   } catch (err) {
     res.status(500).json({ messsage: err.messsage });

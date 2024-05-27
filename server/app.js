@@ -9,6 +9,9 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to Author and Reader Marketplace API.");
+});
 app.use("/auth", authRoutes);
 app.use("/book", bookRoutes);
 
