@@ -2,7 +2,7 @@ const Book = require("../models/book.model");
 
 const createBook = async (req, res) => {
   if (req.user.role != "author") {
-    return res.status(403).send("Access denied. User is not a reader.");
+    return res.status(403).send("Access denied. User is not an author.");
   }
 
   try {
