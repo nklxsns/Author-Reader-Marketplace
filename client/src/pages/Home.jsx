@@ -15,9 +15,9 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="row row-cols-3">
+    <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 p-3">
       {books.map((book, index) => (
-        <div key={index} className="">
+        <div key={index} className="p-3">
           <BookCard {...book} />
         </div>
       ))}

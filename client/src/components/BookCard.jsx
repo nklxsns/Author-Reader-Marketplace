@@ -1,6 +1,6 @@
 const BookCard = ({ title, description, genre, publish_date, price, tags }) => {
   return (
-    <div className="card col">
+    <div className="card col h-100">
       <div className="card-body">
         <h5 className="card-title">{title}</h5>
         <h6 className="card-subtitle mb-2 text-muted">{genre}</h6>
