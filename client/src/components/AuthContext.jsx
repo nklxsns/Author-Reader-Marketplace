@@ -1,58 +1,60 @@
-import { useContext, createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
-export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  async function loginAction(userData) {
-    try {
-      const response = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const resData = await response.json();
-      if (response.ok) {
-        setUser(resData.user);
-        navigate("/");
-        return;
-      } else {
-        throw new Error(resData.message);
-      }
-    } catch (err) {
-      console.error(err);
+  useEffect(() => {
+    const token = Cookies.get("auth");
+    if (token) {
+      setIsAuthenticated(true);
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
-  }
+  }, []);
 
-  async function logOut() {
+  const login = async (username, password) => {
     try {
-      const response = await fetch("http://localhost:5000/auth/logout");
-      const resdata = await response.json();
-      if (response.ok) {
-        setUser(null);
-        navigate("/login");
-        return;
-      } else {
-        throw new Error(resData.message);
-      }
-    } catch (err) {
-      console.error(err);
+      await axios.post(
+        "http://localhost:5000/auth/login",
+        { username, password },
+        { withCredentials: true }
+      );
+      setIsAuthenticated(true);
+      setUsername(username);
+    } catch (error) {
+      console.error("Login failed:", error);
     }
-  }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      setIsAuthenticated(false);
+      setUsername("");
+      Cookies.remove("auth");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, loginAction, logOut }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, username, loading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export const useAuth = () => useContext(AuthContext);

@@ -15,13 +15,11 @@ const register = async (req, res) => {
   const { username, email, password } = req.body;
   try {
     let user = await User.findOne({ email });
-
     if (user) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
     user = await User.findOne({ username });
-
     if (user) {
       return res.status(400).json({ message: "Username already exists" });
     }
@@ -35,26 +33,25 @@ const register = async (req, res) => {
     });
     await newUser.save();
 
-    res
-      .cookie("access_token", createToken(newUser), {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60,
-      })
-      .status(200)
-      .json({
-        message: `${username} has been created`,
-      });
+    res.cookie("_auth", createToken(newUser), {
+      maxAge: 1000 * 60 * 60,
+      httpOnly: true,
+    });
+
+    res.status(200).json({
+      message: `${username} has been created.`,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-
+    const user = await User.findOne({ username });
+    
     if (!user) {
       return res
         .status(400)
@@ -66,23 +63,20 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
 
-    res
-      .cookie("access_token", createToken(user), {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60,
-      })
-      .status(200)
-      .json({ message: "Logged in successfully!" });
+    res.cookie("_auth", createToken(user), {
+      maxAge: 1000 * 60 * 60,
+      httpOnly: true,
+    });
+
+    res.status(200).json({ message: "Logged in successfully!" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-const logout = (req, res) => {
-  return res
-    .clearCookie("access_token")
-    .status(200)
-    .json({ message: "Logged out successfully!" });
+const logout = async (req, res) => {
+  res.clearCookie("_auth");
+  res.status(200).json({ message: "Logged out successfully!" });
 };
 
 module.exports = {

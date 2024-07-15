@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
 const authenticate = async (req, res, next) => {
-  const token = req.cookies.access_token;
+  const token = req.cookies["_auth"];
 
-  if (!token) return res.status(401).send("Access denied. No token provided");
+  if (!token) return res.status(401).send("No token provided");
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId);
